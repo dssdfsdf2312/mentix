@@ -2,9 +2,9 @@ import React from "react"
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import { NextIntlClientProvider } from 'next-intl';
-import { getMessages } from 'next-intl/server';
+import { getMessages, getLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
-import { locales } from '@/i18n';
+import { routing } from '@/i18n/routing';
 
 import '../globals.css'
 
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 }
 
 export function generateStaticParams() {
-  return locales.map((locale) => ({ locale }));
+  return routing.locales.map((locale) => ({ locale }));
 }
 
 export default async function RootLayout({
@@ -30,7 +30,7 @@ export default async function RootLayout({
   const { locale } = await params;
   
   // Validate locale
-  if (!locales.includes(locale as any)) {
+  if (!routing.locales.includes(locale as any)) {
     notFound();
   }
 

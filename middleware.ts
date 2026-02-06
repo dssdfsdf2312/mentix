@@ -1,16 +1,12 @@
 import createMiddleware from 'next-intl/middleware';
-import { locales } from './i18n';
+import { routing } from './i18n/routing';
 
-export function middleware(request: any) {
-  const handleI18nRouting = createMiddleware({
-    locales,
-    defaultLocale: 'en',
-    localePrefix: 'always'
-  });
-  
-  return handleI18nRouting(request);
-}
+export default createMiddleware(routing);
 
 export const config = {
-  matcher: ['/', '/(ar|en)/:path*']
+  matcher: [
+    '/',
+    '/(ar|en)/:path*',
+    '/((?!_next|_vercel|.*\\..*).*)'
+  ]
 };

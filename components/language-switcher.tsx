@@ -1,8 +1,7 @@
 "use client"
 
 import { useLocale } from 'next-intl';
-import { usePathname, useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
+import { useRouter, usePathname } from '@/i18n/navigation';
 import { Languages } from 'lucide-react';
 
 export function LanguageSwitcher() {
@@ -12,20 +11,16 @@ export function LanguageSwitcher() {
 
   const switchLocale = () => {
     const newLocale = locale === 'en' ? 'ar' : 'en';
-    // Remove the current locale from pathname and add the new one
-    const pathWithoutLocale = pathname.replace(/^\/[a-z]{2}/, '');
-    router.push(`/${newLocale}${pathWithoutLocale}`);
+    router.replace(pathname, { locale: newLocale });
   };
 
   return (
-    <Button
-      variant="outline"
-      size="sm"
+    <button
       onClick={switchLocale}
-      className="flex items-center gap-2"
+      className="flex items-center gap-2 rounded-md border border-input bg-background px-3 py-1.5 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
     >
       <Languages className="h-4 w-4" />
       <span>{locale === 'en' ? 'العربية' : 'English'}</span>
-    </Button>
+    </button>
   );
 }
