@@ -1,6 +1,7 @@
 ﻿"use client"
 
 import { useRef, useState, useCallback } from "react"
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { ArrowRight, Play } from "lucide-react"
@@ -46,14 +47,23 @@ export function Hero() {
               <button
                 type="button"
                 onClick={loadVideo}
-                className="absolute inset-0 flex items-center justify-center bg-card transition-colors hover:bg-card/80 group"
+                className="absolute inset-0 flex items-center justify-center group"
                 aria-label="Play video"
               >
-                <div className="flex flex-col items-center gap-3">
-                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary text-primary-foreground transition-transform group-hover:scale-110">
+                <Image
+                  src="/certs/cert-3.png"
+                  alt="Video thumbnail"
+                  fill
+                  className="object-cover"
+                  quality={75}
+                  sizes="(max-width: 768px) 100vw, 768px"
+                />
+                <div className="absolute inset-0 bg-black/40 transition-colors group-hover:bg-black/50" />
+                <div className="relative z-10 flex flex-col items-center gap-3">
+                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary text-primary-foreground transition-transform group-hover:scale-110 shadow-lg">
                     <Play className="h-7 w-7 ml-1" />
                   </div>
-                  <span className="text-sm font-medium text-muted-foreground">Watch Introduction</span>
+                  <span className="text-sm font-medium text-white drop-shadow-md">Watch Introduction</span>
                 </div>
               </button>
             )}
