@@ -1,6 +1,6 @@
 import React from "react"
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Inter, Cairo } from 'next/font/google'
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
@@ -9,6 +9,7 @@ import { routing } from '@/i18n/routing';
 import '../globals.css'
 
 const inter = Inter({ subsets: ['latin'] })
+const cairo = Cairo({ subsets: ['arabic', 'latin'] })
 
 export const metadata: Metadata = {
   title: 'Mentix Trading | Trading Mentorship Program',
@@ -36,10 +37,11 @@ export default async function RootLayout({
 
   const messages = await getMessages();
   const direction = locale === 'ar' ? 'rtl' : 'ltr';
+  const fontClass = locale === 'ar' ? cairo.className : inter.className;
 
   return (
     <html lang={locale} dir={direction}>
-      <body className={`${inter.className} font-sans antialiased`}>
+      <body className={`${fontClass} font-sans antialiased`}>
         <NextIntlClientProvider messages={messages}>
           {children}
         </NextIntlClientProvider>
