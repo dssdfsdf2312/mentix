@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { ChevronRight, ChevronLeft, AlertTriangle, CheckCircle2, Check, Loader2 } from "lucide-react"
 import { EgyptPayment } from "@/components/egypt-payment"
+import { useTranslations } from 'next-intl'
 
 const COUNTRY_CODES = [
   { code: "+1", country: "US", flag: "\u{1F1FA}\u{1F1F8}" },
@@ -63,12 +64,6 @@ const COUNTRY_CODES = [
   { code: "+30", country: "GR", flag: "\u{1F1EC}\u{1F1F7}" },
 ]
 
-const BUDGET_OPTIONS = [
-  { label: "$500", value: "500" },
-  { label: "Above $1000", value: "above-1000" },
-  { label: "Above $2000", value: "above-2000" },
-]
-
 type FormData = {
   fullName: string
   email: string
@@ -81,6 +76,14 @@ type FormData = {
 }
 
 export function EnrollmentForm() {
+  const t = useTranslations('enrollment')
+  
+  const BUDGET_OPTIONS = [
+    { label: t('budget500'), value: "500" },
+    { label: t('budgetAbove1000'), value: "above-1000" },
+    { label: t('budgetAbove2000'), value: "above-2000" },
+  ]
+  
   const [step, setStep] = useState(0)
   const [direction, setDirection] = useState<"forward" | "backward">("forward")
   const [formData, setFormData] = useState<FormData>({
@@ -213,10 +216,10 @@ export function EnrollmentForm() {
   }
 
   const starterFeatures = [
-    "Full SMC Course",
-    "20+ Video Lessons",
-    "Private Discord Community (limited access)",
-    "One zoom meeting with Group of 10 people",
+    t('feature1'),
+    t('feature2'),
+    t('feature3'),
+    t('feature4'),
   ]
 
   if (submitted) {
@@ -229,28 +232,27 @@ export function EnrollmentForm() {
                 <AlertTriangle className="h-7 w-7 text-primary" />
               </div>
               <h2 className="mb-2 text-xl font-bold text-foreground sm:text-2xl">
-                Thank You, {formData.fullName}!
+                {t('thankYou', { name: formData.fullName })}
               </h2>
               <p className="leading-relaxed text-muted-foreground">
-                Based on your current investment preference, you are currently ineligible to book
-                a 1-on-1 coaching meeting. However, you can enroll in the{" "}
-                <span className="font-bold text-[hsl(210,60%,50%)]">ADVANCED SMC Course</span>{" "}
-                right now!
+                {t('ineligibleMessage')}{" "}
+                <span className="font-bold text-[hsl(210,60%,50%)]">{t('advancedCourse')}</span>{" "}
+                {t('ineligibleMessageEnd')}
               </p>
             </div>
 
             <Card className="relative border-[hsl(210,60%,50%)]/30 bg-card">
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-[hsl(210,60%,50%)] px-4 py-1 text-xs font-bold text-foreground">
-                STARTER
+                {t('starter')}
               </div>
               <CardContent className="pt-8 pb-6">
                 <div className="mb-6 text-center">
-                  <h3 className="text-2xl font-bold text-foreground">ADVANCED SMC Course</h3>
+                  <h3 className="text-2xl font-bold text-foreground">{t('courseTitle')}</h3>
                   <div className="mt-3 flex items-baseline justify-center gap-2">
                     <span className="text-lg text-muted-foreground line-through">$500</span>
                     <span className="text-5xl font-bold text-[hsl(210,60%,50%)]">$250</span>
                   </div>
-                  <p className="mt-2 text-sm text-muted-foreground">One-time payment, lifetime access</p>
+                  <p className="mt-2 text-sm text-muted-foreground">{t('oneTimePayment')}</p>
                 </div>
 
                 <ul className="mb-6 space-y-3">
@@ -269,7 +271,7 @@ export function EnrollmentForm() {
                         <path d="M293.2 348.73l33.36-195.76h53.35l-33.38 195.76zm246.11-191.54c-10.57-3.97-27.16-8.21-47.89-8.21-52.78 0-89.94 26.6-90.18 64.76-.47 28.16 26.48 43.87 46.73 53.24 20.72 9.6 27.68 15.74 27.68 24.32-.24 13.12-16.59 19.12-31.93 19.12-21.37 0-32.69-2.96-50.21-10.25l-6.88-3.12-7.49 43.89c12.46 5.47 35.52 10.21 59.47 10.45 56.13 0 92.58-26.24 92.82-67.04.24-22.36-14.06-39.34-44.94-53.36-18.71-9.08-30.19-15.14-30.19-24.32.24-8.33 9.72-16.89 30.67-16.89 17.53-.24 30.19 3.56 40.06 7.53l4.83 2.26 7.33-42.38h-.01zm137.31-4.22h-41.27c-12.77 0-22.33 3.49-27.92 16.26l-79.27 179.5h56.13l11.21-29.35 68.45.08c1.58 6.85 6.48 29.27 6.48 29.27h49.62l-43.31-195.76h-.12zm-65.25 126.41c4.43-11.32 21.37-54.96 21.37-54.96-.24.47 4.39-11.36 7.13-18.72l3.64 16.89 12.38 56.79h-44.52zm-382.79-126.41l-52.31 133.37-5.56-27.22c-9.72-31.24-39.94-65.12-73.78-82.01l47.89 171.62 56.6-.08 84.22-195.68h-56.6l-.46-.01z" />
                         <path d="M51.71 152.97l-.82 4.96c21.37 5.16 40.53 12.63 57.3 22.51l48.38 173.22 57.08-.08 84.94-200.61h-57.08l-52.78 136.14-5.72-27.57c-9.72-13.12-17.77-23.7-28.68-32.89-22.83-19.14-48.03-30.87-66.53-37.43l-36.09-38.25z" fill="#F7A600" />
                       </svg>
-                      Pay with Visa
+                      {t('payWithVisa')}
                     </Button>
                   </a>
                   <Button
@@ -281,7 +283,7 @@ export function EnrollmentForm() {
                     {binanceLoading ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Processing...
+                        {t('processing')}
                       </>
                     ) : (
                       <>
@@ -294,7 +296,7 @@ export function EnrollmentForm() {
                           <path d="M38.73 53.2l24.59-24.58 24.6 24.6 14.3-14.31L63.32 0l-38.9 38.9zM0 63.31l14.3-14.31 14.31 14.31-14.31 14.3zM38.73 73.41l24.59 24.59 24.6-24.6 14.31 14.29-38.9 38.91-38.91-38.88zM98 63.31l14.3-14.31 14.31 14.3-14.31 14.31z" />
                           <path d="M77.83 63.3l-14.51-14.52-10.73 10.73-1.24 1.23-2.54 2.54 14.51 14.53 14.51-14.51z" />
                         </svg>
-                        Pay with Binance
+                        {t('payWithBinance')}
                       </>
                     )}
                   </Button>
@@ -321,10 +323,10 @@ export function EnrollmentForm() {
                     <CheckCircle2 className="h-7 w-7 text-primary" />
                   </div>
                   <h2 className="mb-2 text-xl font-bold text-foreground sm:text-2xl">
-                    {"You're Eligible, "}{formData.fullName}!
+                    {t('eligibleTitle', { name: formData.fullName })}
                   </h2>
                   <p className="text-sm text-muted-foreground">
-                    Book your onboarding meeting below to get started with 1-on-1 Coaching.
+                    {t('eligibleSubtitle')}
                   </p>
                 </div>
                 <div className="w-full">
@@ -349,10 +351,10 @@ export function EnrollmentForm() {
       <div className="mx-auto max-w-xl">
         <div className="mb-8 text-center">
           <h2 className="mb-2 text-2xl font-bold text-foreground sm:text-3xl">
-            Start Your <span className="text-primary">Journey</span>
+            {t('pageTitle')} <span className="text-primary">{t('pageTitleHighlight')}</span>
           </h2>
           <p className="text-sm text-muted-foreground">
-            Answer a few quick questions to get started
+            {t('pageSubtitle')}
           </p>
         </div>
 
@@ -369,10 +371,10 @@ export function EnrollmentForm() {
             {/* Step counter */}
             <div className="mb-6 flex items-center justify-between">
               <span className="text-xs font-medium text-muted-foreground">
-                Question {step + 1} of {totalSteps}
+                {t('questionCounter', { current: step + 1, total: totalSteps })}
               </span>
               <span className="text-xs font-medium text-primary">
-                {Math.round(progressWidth)}% complete
+                {t('progressComplete', { percent: Math.round(progressWidth) })}
               </span>
             </div>
 
@@ -389,11 +391,11 @@ export function EnrollmentForm() {
               {step === 0 && (
                 <div>
                   <label className="mb-4 block text-lg font-semibold text-foreground">
-                    What is your full name?
+                    {t('question1')}
                   </label>
                   <Input
                     ref={inputRef as React.RefObject<HTMLInputElement>}
-                    placeholder="Enter your full name"
+                    placeholder={t('question1Placeholder')}
                     value={formData.fullName}
                     onChange={(e) => {
                       const val = e.target.value
@@ -405,7 +407,7 @@ export function EnrollmentForm() {
                     className="h-12 border-border bg-secondary text-foreground placeholder:text-muted-foreground focus:border-primary"
                   />
                   <p className="mt-2 text-xs text-muted-foreground">
-                    Only letters and spaces are allowed.
+                    {t('question1Helper')}
                   </p>
                 </div>
               )}
@@ -413,12 +415,12 @@ export function EnrollmentForm() {
               {step === 1 && (
                 <div>
                   <label className="mb-4 block text-lg font-semibold text-foreground">
-                    What is your email address?
+                    {t('question2')}
                   </label>
                   <Input
                     ref={inputRef as React.RefObject<HTMLInputElement>}
                     type="email"
-                    placeholder="example@email.com"
+                    placeholder={t('question2Placeholder')}
                     value={formData.email}
                     onChange={(e) =>
                       setFormData({ ...formData, email: e.target.value })
@@ -428,7 +430,7 @@ export function EnrollmentForm() {
                   />
                   {formData.email.trim().length > 0 && !isValidEmail(formData.email) && (
                     <p className="mt-2 text-xs text-destructive">
-                      Please enter a valid email address.
+                      {t('question2Error')}
                     </p>
                   )}
                 </div>
@@ -437,12 +439,12 @@ export function EnrollmentForm() {
               {step === 2 && (
                 <div>
                   <label className="mb-4 block text-lg font-semibold text-foreground">
-                    Your age?
+                    {t('question3')}
                   </label>
                   <Input
                     ref={inputRef as React.RefObject<HTMLInputElement>}
                     type="number"
-                    placeholder="Enter your age"
+                    placeholder={t('question3Placeholder')}
                     value={formData.age}
                     onChange={(e) =>
                       setFormData({ ...formData, age: e.target.value })
@@ -456,11 +458,11 @@ export function EnrollmentForm() {
               {step === 3 && (
                 <div>
                   <label className="mb-4 block text-lg font-semibold text-foreground">
-                    What are your ambitions in trading?
+                    {t('question4')}
                   </label>
                   <Textarea
                     ref={inputRef as React.RefObject<HTMLTextAreaElement>}
-                    placeholder="Tell us about your trading goals and what you want to achieve..."
+                    placeholder={t('question4Placeholder')}
                     value={formData.ambitions}
                     onChange={(e) =>
                       setFormData({ ...formData, ambitions: e.target.value })
@@ -473,11 +475,11 @@ export function EnrollmentForm() {
               {step === 4 && (
                 <div>
                   <label className="mb-4 block text-lg font-semibold text-foreground">
-                    Briefly describe your trading experience and expertise.
+                    {t('question5')}
                   </label>
                   <Textarea
                     ref={inputRef as React.RefObject<HTMLTextAreaElement>}
-                    placeholder="Share your background, strategies you've used, how long you've been trading..."
+                    placeholder={t('question5Placeholder')}
                     value={formData.experience}
                     onChange={(e) =>
                       setFormData({ ...formData, experience: e.target.value })
@@ -490,7 +492,7 @@ export function EnrollmentForm() {
               {step === 5 && (
                 <div>
                   <label className="mb-4 block text-lg font-semibold text-foreground">
-                    How much are you willing to pay to reach a professional level?
+                    {t('question6')}
                   </label>
                   <div className="flex flex-col gap-3">
                     {BUDGET_OPTIONS.map((option) => (
@@ -527,7 +529,7 @@ export function EnrollmentForm() {
               {step === 6 && (
                 <div>
                   <label className="mb-4 block text-lg font-semibold text-foreground">
-                    Your WhatsApp number?
+                    {t('question7')}
                   </label>
                   <div className="flex gap-2">
                     <select
@@ -548,7 +550,7 @@ export function EnrollmentForm() {
                       type="tel"
                       inputMode="numeric"
                       pattern="[0-9]*"
-                      placeholder="e.g. 01012345678"
+                      placeholder={t('question7Placeholder')}
                       value={formData.whatsapp}
                       maxLength={11}
                       onChange={(e) => {
@@ -563,7 +565,7 @@ export function EnrollmentForm() {
                   </div>
                   {formData.whatsapp.length > 0 && formData.whatsapp.length < 10 && (
                     <p className="mt-2 text-xs text-destructive">
-                      Number must be at least 10 digits.
+                      {t('question7Error')}
                     </p>
                   )}
                 </div>
@@ -579,7 +581,7 @@ export function EnrollmentForm() {
                 className="gap-1 bg-transparent text-foreground disabled:opacity-30"
               >
                 <ChevronLeft className="h-4 w-4" />
-                Back
+                {t('back')}
               </Button>
 
               <Button
@@ -587,7 +589,7 @@ export function EnrollmentForm() {
                 disabled={!canProceed()}
                 className="gap-1 text-base disabled:opacity-30"
               >
-                {step === totalSteps - 1 ? "Submit" : "Next"}
+                {step === totalSteps - 1 ? t('submit') : t('next')}
                 {step < totalSteps - 1 && <ChevronRight className="h-4 w-4" />}
               </Button>
             </div>
