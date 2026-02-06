@@ -133,6 +133,27 @@
     "processing": "Processing...",
     "eligibleTitle": "You're Eligible, {name}!",
     "eligibleSubtitle": "Book your onboarding meeting below to get started with 1-on-1 Coaching."
+  },
+  "egyptPayment": {
+    "title": "For Egyptian People You Can Pay With",
+    "titleHighlight": "Instapay",
+    "howToPay": "How to Pay",
+    "step1": "Open your",
+    "step1Bold": "INSTAPAY",
+    "step1End": "app to Send the Payment",
+    "step2": "For",
+    "step2StarterPlan": "STARTER PLAN",
+    "step2Pay": "Pay",
+    "step2Amount": "9,600 EGP",
+    "step2And": "and For",
+    "step2CoachingPlan": "1-on-1 Coaching",
+    "step2ContactUs": "PLAN Contact Us",
+    "step3": "Send a payment confirmation screenshot to the team",
+    "step3Here": "HERE",
+    "instapay": "Instapay",
+    "vodafoneCash": "Vodafone Cash",
+    "copy": "Copy",
+    "copied": "Copied"
   }
 }
 
