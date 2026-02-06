@@ -65,7 +65,7 @@ export function Hero() {
                   <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary text-primary-foreground transition-transform group-hover:scale-110 shadow-lg">
                     <Play className="h-7 w-7 ml-1" />
                   </div>
-                  <span className="text-sm font-medium text-white drop-shadow-md">Watch Introduction</span>
+                  <span className="text-sm font-medium text-white drop-shadow-md">{t('watchIntro')}</span>
                 </div>
               </button>
             )}
@@ -73,7 +73,7 @@ export function Hero() {
         </div>
 
         <p className="mx-auto mb-10 max-w-2xl text-lg font-bold leading-relaxed text-primary md:text-xl text-pretty">
-          Unlock Your Edge & Transform Your Trading Strategy With Expert Guidance.
+          {t('tagline')}
         </p>
 
         <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
@@ -88,7 +88,7 @@ export function Hero() {
         </div>
 
         <p className="mt-8 text-base font-medium text-foreground">
-          To know me more check my accounts
+          {t('socialText')}
         </p>
         <div className="mt-3 flex items-center justify-center gap-4">
           <a

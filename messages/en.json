@@ -9,19 +9,40 @@
     "titleHighlight": "Trading Like A Pro",
     "description": "Crush your trading roadblocks with a personalized 1-on-1 session. Get expert insights, custom strategies, and clarity to fast-track your consistency.",
     "enrollButton": "Enroll Now",
-    "learnMore": "Learn More"
+    "learnMore": "Learn More",
+    "watchIntro": "Watch Introduction",
+    "tagline": "Unlock Your Edge & Transform Your Trading Strategy With Expert Guidance.",
+    "socialText": "To know me more check my accounts"
   },
   "certificate": {
-    "title": "Get Your Certificate",
-    "description": "Upon completion, receive a professional trading certificate to showcase your expertise."
+    "badge": "Proven Results",
+    "title": "Prop Firm",
+    "titleHighlight": "Achievements",
+    "description": "Real funded accounts, real payouts."
   },
   "curriculum": {
-    "title": "Comprehensive Curriculum",
-    "description": "Our structured program covers everything from basics to advanced trading strategies."
+    "title": "What You'll",
+    "titleHighlight": "Master",
+    "description": "Master momentum trading with clarity. Mentix Trading teaches a structured, repeatable process using POI (OB & FVG, supply & demand), market structure, and liquidity to build precision, confidence, and consistency in every trade.",
+    "modules": [
+      { "title": "Market Mechanics", "description": "Understand how markets truly move through order flow and volume analysis." },
+      { "title": "Consistency Profitable", "description": "Learn how to be a consistent profitable trader — long term profitable." },
+      { "title": "PropFirm & Funded Acc", "description": "Master how to pass a propfirm challenge with a professional strategy & risk management." },
+      { "title": "POI Identification", "description": "Identify high-probability Points of Interest using OB, FVG, and supply & demand zones." },
+      { "title": "Risk Management", "description": "Develop a professional risk framework to protect and grow your capital." },
+      { "title": "Trade Execution", "description": "Build a repeatable execution plan with clear rules and journaling practices." }
+    ]
   },
   "whatsIncluded": {
-    "title": "What's Included",
-    "description": "Everything you need to become a successful trader"
+    "title": "What's",
+    "titleHighlight": "Included",
+    "description": "Everything you need to become a consistently profitable trader.",
+    "items": [
+      { "title": "60+ Video Lessons", "description": "In-depth recorded lessons covering every aspect of POI (OB & FVG, supply & demand), market structure, and liquidity trading." },
+      { "title": "Private Community", "description": "Join an exclusive Discord & Telegram community of serious traders for daily discussion." },
+      { "title": "Trading Playbook", "description": "A complete playbook with setups, checklists, and journaling templates." },
+      { "title": "1-on-1 Live Sessions", "description": "Weekly 1-on-1 live sessions where you can ask questions and get real-time feedback." }
+    ]
   },
   "pricing": {
     "title": "Choose Your Plan",
@@ -69,3 +90,4 @@
     "tryAgain": "Try Again"
   }
 }
+

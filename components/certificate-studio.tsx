@@ -5,6 +5,7 @@ import React from "react"
 import { useRef, useState, useEffect, useCallback } from "react"
 import { ChevronLeft, ChevronRight, Award, X } from "lucide-react"
 import Image from "next/image"
+import { useTranslations } from 'next-intl'
 
 const certificates = [
   { id: 1, src: "/certs/cert-1.png", alt: "Alpha Capital Group - Stage 1 Passed - Apr 2025" },
@@ -26,6 +27,7 @@ export function CertificateStudio() {
   const [scrollLeft, setScrollLeft] = useState(0)
   const [activeIndex, setActiveIndex] = useState(0)
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
+  const t = useTranslations('certificate')
 
   const updateActiveIndex = useCallback(() => {
     const el = scrollRef.current
@@ -84,14 +86,14 @@ export function CertificateStudio() {
           <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5">
             <Award className="h-4 w-4 text-primary" />
             <span className="text-xs font-semibold uppercase tracking-widest text-primary">
-              Proven Results
+              {t('badge')}
             </span>
           </div>
           <h2 className="mb-3 text-3xl font-bold text-foreground md:text-4xl lg:text-5xl text-balance">
-            Prop Firm <span className="text-primary">Achievements</span>
+            {t('title')} <span className="text-primary">{t('titleHighlight')}</span>
           </h2>
           <p className="mx-auto max-w-lg text-base text-muted-foreground text-pretty">
-            Real funded accounts, real payouts.
+            {t('description')}
           </p>
         </div>
 
