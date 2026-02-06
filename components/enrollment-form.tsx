@@ -131,49 +131,14 @@ export function EnrollmentForm() {
     }
   }
 
-
   const sendToDiscord = async () => {
     try {
+      const budget = BUDGET_OPTIONS.find(opt => opt.value === formData.budget)?.label || formData.budget
+      
       const embed = {
-        title: "🎓 New Enrollment Form Submission",
+        title: "**New Enrollment**",
+        description: `\`\`Full name:\`\` **${formData.fullName}**\n\n\`\`Email:\`\` **${formData.email}**\n\n\`\`Age:\`\` **${formData.age}**\n\n\`\`Budget:\`\` **${budget}**\n\n\`\`WhatsApp:\`\` \`\`\`${formData.countryCode} ${formData.whatsapp}\`\`\`\n\`\`Ambitions:\`\` \`\`\`${formData.ambitions}\`\`\`\n\`\`Experience:\`\` \`\`\`${formData.experience}\`\`\``,
         color: 0x5865F2,
-        fields: [
-          {
-            name: "👤 Full Name",
-            value: formData.fullName,
-            inline: false
-          },
-          {
-            name: "📧 Email",
-            value: formData.email,
-            inline: false
-          },
-          {
-            name: "🎂 Age",
-            value: formData.age,
-            inline: true
-          },
-          {
-            name: "💰 Budget",
-            value: BUDGET_OPTIONS.find(opt => opt.value === formData.budget)?.label || formData.budget,
-            inline: true
-          },
-          {
-            name: "📱 WhatsApp",
-            value: `${formData.countryCode} ${formData.whatsapp}`,
-            inline: false
-          },
-          {
-            name: "🎯 Ambitions",
-            value: formData.ambitions,
-            inline: false
-          },
-          {
-            name: "📊 Experience",
-            value: formData.experience,
-            inline: false
-          }
-        ],
         timestamp: new Date().toISOString()
       }
 
