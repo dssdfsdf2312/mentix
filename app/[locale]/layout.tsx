@@ -12,9 +12,9 @@ const inter = Inter({ subsets: ['latin'] })
 const alexandria = Alexandria({ subsets: ['arabic', 'latin'] })
 
 export const metadata: Metadata = {
-  title: 'Mentix Trading | Trading Mentorship Program',
+  title: 'Mentix Trading | Trade Like A Professional',
   description:
-    'Master Order Flow Trading. Unlock Your Edge & Transform Your Trading Strategy With Expert Guidance.',
+    'Master Trading. Unlock Your Edge & Transform Your Trading Strategy With Expert Guidance.',
 }
 
 export function generateStaticParams() {
@@ -41,7 +41,7 @@ export default async function RootLayout({
 
   return (
     <html lang={locale} dir={direction}>
-      <body className={`${fontClass} font-sans antialiased`}>
+      <body className={`${fontClass} antialiased`}>
         <NextIntlClientProvider messages={messages}>
           {children}
         </NextIntlClientProvider>
