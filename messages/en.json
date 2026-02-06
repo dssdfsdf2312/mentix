@@ -1,0 +1,71 @@
+{
+  "navbar": {
+    "brand": "Mentix Trading",
+    "joinDiscord": "Join Discord"
+  },
+  "hero": {
+    "badge": "Limited Spots Available",
+    "title": "Master",
+    "titleHighlight": "Trading Like A Pro",
+    "description": "Crush your trading roadblocks with a personalized 1-on-1 session. Get expert insights, custom strategies, and clarity to fast-track your consistency.",
+    "enrollButton": "Enroll Now",
+    "learnMore": "Learn More"
+  },
+  "certificate": {
+    "title": "Get Your Certificate",
+    "description": "Upon completion, receive a professional trading certificate to showcase your expertise."
+  },
+  "curriculum": {
+    "title": "Comprehensive Curriculum",
+    "description": "Our structured program covers everything from basics to advanced trading strategies."
+  },
+  "whatsIncluded": {
+    "title": "What's Included",
+    "description": "Everything you need to become a successful trader"
+  },
+  "pricing": {
+    "title": "Choose Your Plan",
+    "description": "Select the perfect plan for your trading journey",
+    "monthly": "Monthly",
+    "annually": "Annually",
+    "save": "Save 20%",
+    "perMonth": "per month",
+    "selectPlan": "Select Plan",
+    "mostPopular": "Most Popular"
+  },
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "subtitle": "Everything you need to know about Mentix Trading",
+    "items": [
+      {
+        "question": "How can Mentix Trading help me achieve consistent profits?",
+        "answer": "With expert strategies, real-time coaching, and a supportive community, we simplify momentum trading for sustainable results."
+      },
+      {
+        "question": "What makes Mentix Trading different from other communities?",
+        "answer": "We offer structured trading models, live sessions, and direct access to experts who've helped thousands of traders succeed."
+      },
+      {
+        "question": "Is Mentix Trading suitable for beginners?",
+        "answer": "Yes! We simplify complex strategies into clear steps, guiding you from beginner to consistent trader."
+      },
+      {
+        "question": "How does Mentix Trading support funded traders?",
+        "answer": "We offer continuous feedback and coaching to help you secure funding, stay disciplined, and scale your trading."
+      },
+      {
+        "question": "How does the community support my trading journey?",
+        "answer": "Our active community shares insights, strategies, and real-time feedback to keep you motivated and on track."
+      }
+    ]
+  },
+  "footer": {
+    "rights": "All rights reserved.",
+    "description": "Master trading with expert guidance and proven strategies."
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "tryAgain": "Try Again"
+  }
+}

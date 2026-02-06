@@ -5,10 +5,12 @@ import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { ArrowRight, Play } from "lucide-react"
+import { useTranslations } from 'next-intl'
 
 export function Hero() {
   const videoRef = useRef<HTMLIFrameElement>(null)
   const [videoLoaded, setVideoLoaded] = useState(false)
+  const t = useTranslations('hero')
 
   const loadVideo = useCallback(() => {
     setVideoLoaded(true)
@@ -19,16 +21,16 @@ export function Hero() {
       <div className="mx-auto max-w-4xl">
         <Badge variant="outline" className="mb-6 animate-pulse rounded-full border-primary/30 bg-primary/10 px-5 py-2.5 text-base font-medium text-primary md:text-lg">
           <span className="mr-2 inline-block h-2.5 w-2.5 rounded-full bg-primary" />
-          Limited Spots Available
+          {t('badge')}
         </Badge>
 
         <h1 className="mb-6 text-4xl font-bold leading-tight tracking-tight text-foreground md:text-6xl lg:text-7xl text-balance">
-          Master{" "}
-          <span className="text-primary">Trading Like A Pro</span>
+          {t('title')}{" "}
+          <span className="text-primary">{t('titleHighlight')}</span>
         </h1>
 
         <p className="mx-auto mb-8 max-w-2xl text-base leading-relaxed text-foreground md:text-lg text-pretty">
-          Crush your trading roadblocks with a personalized 1-on-1 session. Get expert insights, custom strategies, and clarity to fast-track your consistency.
+          {t('description')}
         </p>
 
         <div className="mx-auto mb-10 w-full max-w-3xl overflow-hidden rounded-xl border border-border">
@@ -77,11 +79,11 @@ export function Hero() {
         <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
           <Button asChild size="lg" className="gap-2 text-base">
             <a href="/enroll">
-              Enroll a Free Meeting NOW <ArrowRight className="h-4 w-4" />
+              {t('enrollButton')} <ArrowRight className="h-4 w-4" />
             </a>
           </Button>
           <Button asChild variant="outline" size="lg" className="text-base bg-transparent">
-            <a href="#curriculum">What You'll Master</a>
+            <a href="#curriculum">{t('learnMore')}</a>
           </Button>
         </div>
 
