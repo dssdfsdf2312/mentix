@@ -1,12 +1,17 @@
-"use client"
+﻿"use client"
 
-import { useRef, useEffect } from "react"
+import { useRef, useState, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { ArrowRight } from "lucide-react"
+import { ArrowRight, Play } from "lucide-react"
 
 export function Hero() {
   const videoRef = useRef<HTMLIFrameElement>(null)
+  const [videoLoaded, setVideoLoaded] = useState(false)
+
+  const loadVideo = useCallback(() => {
+    setVideoLoaded(true)
+  }, [])
 
   return (
     <section className="relative px-4 pb-10 pt-10 text-center md:pt-12">
@@ -27,15 +32,31 @@ export function Hero() {
 
         <div className="mx-auto mb-10 w-full max-w-3xl overflow-hidden rounded-xl border border-border">
           <div className="relative w-full" style={{ paddingBottom: "56.25%" }}>
-            <iframe
-              ref={videoRef}
-              className="absolute inset-0 h-full w-full"
-              src="https://www.loom.com/embed/2da9913dcacf473a849c5208c0e76a5d?autoplay=0"
-              title="Mentorship Video"
-              frameBorder="0"
-              allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            />
+            {videoLoaded ? (
+              <iframe
+                ref={videoRef}
+                className="absolute inset-0 h-full w-full"
+                src="https://www.loom.com/embed/2da9913dcacf473a849c5208c0e76a5d?autoplay=1"
+                title="Mentorship Video"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            ) : (
+              <button
+                type="button"
+                onClick={loadVideo}
+                className="absolute inset-0 flex items-center justify-center bg-card transition-colors hover:bg-card/80 group"
+                aria-label="Play video"
+              >
+                <div className="flex flex-col items-center gap-3">
+                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary text-primary-foreground transition-transform group-hover:scale-110">
+                    <Play className="h-7 w-7 ml-1" />
+                  </div>
+                  <span className="text-sm font-medium text-muted-foreground">Watch Introduction</span>
+                </div>
+              </button>
+            )}
           </div>
         </div>
 

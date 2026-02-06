@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import React from "react"
 
@@ -127,11 +127,13 @@ export function CertificateStudio() {
                 >
                   <div className="relative w-full" style={{ aspectRatio: "4/3" }}>
                     <Image
-                      src={cert.src || "/placeholder.svg"}
+                      src={cert.src}
                       alt={cert.alt}
                       fill
                       className="object-contain p-2 pointer-events-none"
                       sizes="(max-width: 768px) 100vw, 50vw"
+                      quality={75}
+                      {...(i < 2 ? { priority: true } : { loading: "lazy" })}
                     />
                   </div>
                 </div>
@@ -208,11 +210,13 @@ export function CertificateStudio() {
             onClick={(e) => e.stopPropagation()}
           >
             <Image
-              src={certificates[lightboxIndex].src || "/placeholder.svg"}
+              src={certificates[lightboxIndex].src}
               alt={certificates[lightboxIndex].alt}
               width={1200}
               height={900}
               className="h-auto max-h-[85vh] w-auto rounded-2xl border border-border object-contain"
+              quality={85}
+              sizes="(max-width: 768px) 100vw, 1200px"
             />
           </div>
 
