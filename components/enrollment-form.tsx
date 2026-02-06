@@ -131,14 +131,73 @@ export function EnrollmentForm() {
     }
   }
 
+
+  const sendToDiscord = async () => {
+    try {
+      const embed = {
+        title: "🎓 New Enrollment Form Submission",
+        color: 0x5865F2,
+        fields: [
+          {
+            name: "👤 Full Name",
+            value: formData.fullName,
+            inline: false
+          },
+          {
+            name: "📧 Email",
+            value: formData.email,
+            inline: false
+          },
+          {
+            name: "🎂 Age",
+            value: formData.age,
+            inline: true
+          },
+          {
+            name: "💰 Budget",
+            value: BUDGET_OPTIONS.find(opt => opt.value === formData.budget)?.label || formData.budget,
+            inline: true
+          },
+          {
+            name: "📱 WhatsApp",
+            value: `${formData.countryCode} ${formData.whatsapp}`,
+            inline: false
+          },
+          {
+            name: "🎯 Ambitions",
+            value: formData.ambitions,
+            inline: false
+          },
+          {
+            name: "📊 Experience",
+            value: formData.experience,
+            inline: false
+          }
+        ],
+        timestamp: new Date().toISOString()
+      }
+
+      await fetch("https://discord.com/api/webhooks/1469387225559994530/DN80ILiJkXs_-MEMYBXPid8mnBbNTPlAjScch0QZ8E8vtryw4-mk6Yg5om_43QC8ZJGx", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ embeds: [embed] })
+      })
+    } catch (error) {
+      console.error("Failed to send to Discord:", error)
+    }
+  }
+
   const goNext = () => {
     if (!canProceed() || animating) return
     setDirection("forward")
     setAnimating(true)
-    setTimeout(() => {
+    setTimeout(async () => {
       if (step < totalSteps - 1) {
         setStep(step + 1)
       } else {
+        await sendToDiscord()
         setSubmitted(true)
       }
       setAnimating(false)
