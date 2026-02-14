@@ -32,7 +32,8 @@ export async function POST(request: NextRequest) {
 
 export async function GET() {
   const supabase = await createClient();
-  const today = new Date().toISOString().split("T")[0];
+  const now = new Date();
+  const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
 
   const { data, error } = await supabase
     .from("availability_slots")
@@ -52,7 +53,23 @@ export async function DELETE(request: NextRequest) {
   const supabase = await createClient();
   const { searchParams } = new URL(request.url);
   const id = searchParams.get("id");
+  const deleteAll = searchParams.get("all");
 
+  // Delete all unbooked slots
+  if (deleteAll === "true") {
+    const { error } = await supabase
+      .from("availability_slots")
+      .delete()
+      .eq("is_booked", false);
+
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    return NextResponse.json({ success: true, message: "All available slots deleted" });
+  }
+
+  // Delete single slot by ID
   if (!id) {
     return NextResponse.json({ error: "Slot ID is required" }, { status: 400 });
   }
