@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import { useState } from "react"
 import { Menu, X, TrendingUp } from "lucide-react"
@@ -19,9 +19,6 @@ export function Navbar() {
         </a>
 
         <div className="hidden items-center gap-4 md:flex">
-          <a href="/booking" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
-            {t('booking')}
-          </a>
           <a href="/crypto" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
             {t('crypto')}
           </a>
@@ -44,13 +41,6 @@ export function Navbar() {
       {open && (
         <div className="border-t border-border bg-background px-4 pb-4 md:hidden">
           <div className="flex flex-col gap-3 pt-3">
-            <a
-              href="/booking"
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-              onClick={() => setOpen(false)}
-            >
-              {t('booking')}
-            </a>
             <a
               href="/crypto"
               className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
