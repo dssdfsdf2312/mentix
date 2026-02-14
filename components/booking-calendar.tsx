@@ -89,11 +89,19 @@ export function BookingCalendar() {
     return acc
   }, new Set<string>())
 
+  const formatDateLocal = (date: Date): string => {
+    const year = date.getFullYear()
+    const month = String(date.getMonth() + 1).padStart(2, '0')
+    const day = String(date.getDate()).padStart(2, '0')
+    return `${year}-${month}-${day}`
+  }
+
   const fetchSlotsForDate = useCallback(
     async (date: Date) => {
       setLoading(true)
       try {
-        const dateStr = date.toISOString().split("T")[0]
+        // Use local date formatting to avoid UTC timezone conversion
+        const dateStr = formatDateLocal(date)
         const res = await fetch(`/api/slots?date=${dateStr}`)
         const data = await res.json()
         if (data.slots) {
@@ -297,7 +305,7 @@ export function BookingCalendar() {
               selected={selectedDate}
               onSelect={handleDateSelect}
               disabled={(date) => {
-                const dateStr = date.toISOString().split("T")[0]
+                const dateStr = formatDateLocal(date)
                 return (
                   date < new Date(new Date().setHours(0, 0, 0, 0)) ||
                   !availableDates.has(dateStr)
@@ -305,7 +313,7 @@ export function BookingCalendar() {
               }}
               modifiers={{
                 available: (date) => {
-                  const dateStr = date.toISOString().split("T")[0]
+                  const dateStr = formatDateLocal(date)
                   return (
                     date >= new Date(new Date().setHours(0, 0, 0, 0)) &&
                     availableDates.has(dateStr)
