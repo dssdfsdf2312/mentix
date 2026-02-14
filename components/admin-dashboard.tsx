@@ -1,482 +1,664 @@
-'use client';
+﻿"use client"
 
-import { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Calendar, Clock, Mail, Phone, Video, Trash2, Edit, Plus, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
-import { Appointment, AvailabilitySlot } from '@/lib/types/appointments';
+import { useState, useEffect, useCallback } from "react"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Badge } from "@/components/ui/badge"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import {
+  Calendar as CalendarIcon,
+  Clock,
+  Plus,
+  Trash2,
+  Video,
+  RefreshCw,
+  XCircle,
+  CheckCircle2,
+  Users,
+  CalendarDays,
+  TrendingUp,
+  LogOut,
+} from "lucide-react"
+
+type Slot = {
+  id: string
+  date: string
+  start_time: string
+  end_time: string
+  duration: number
+  is_booked: boolean
+  created_at: string
+}
+
+type Booking = {
+  id: string
+  slot_id: string
+  client_name: string
+  client_email: string
+  client_phone: string | null
+  client_message: string | null
+  duration: number
+  status: string
+  zoom_meeting_id: string | null
+  zoom_join_url: string | null
+  zoom_start_url: string | null
+  created_at: string
+  availability_slots: Slot
+}
 
 export function AdminDashboard() {
-  const [appointments, setAppointments] = useState<Appointment[]>([]);
-  const [availabilitySlots, setAvailabilitySlots] = useState<AvailabilitySlot[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
-  
-  // Form state for availability
-  const [newSlot, setNewSlot] = useState({
-    dayOfWeek: '',
-    startTime: '',
-    endTime: '',
-  });
+  const [bookings, setBookings] = useState<Booking[]>([])
+  const [slots, setSlots] = useState<Slot[]>([])
+  const [loadingBookings, setLoadingBookings] = useState(true)
+  const [loadingSlots, setLoadingSlots] = useState(true)
+  const [rescheduleBookingId, setRescheduleBookingId] = useState<string | null>(null)
+  const [rescheduleSlotId, setRescheduleSlotId] = useState<string>("")
 
-  // Fetch appointments
-  const fetchAppointments = async () => {
-    try {
-      const response = await fetch('/api/appointments');
-      const data = await response.json();
-      if (data.success) {
-        setAppointments(data.data);
-      }
-    } catch (error) {
-      console.error('Error fetching appointments:', error);
-    }
-  };
+  // Add slot form
+  const [newSlotDate, setNewSlotDate] = useState("")
+  const [newSlotStartTime, setNewSlotStartTime] = useState("09:00")
+  const [newSlotDuration, setNewSlotDuration] = useState("60")
+  const [addingSlot, setAddingSlot] = useState(false)
 
-  // Fetch availability slots
-  const fetchAvailability = async () => {
+  // Bulk slot form
+  const [bulkDate, setBulkDate] = useState("")
+  const [bulkStartHour, setBulkStartHour] = useState("9")
+  const [bulkEndHour, setBulkEndHour] = useState("17")
+  const [bulkDuration, setBulkDuration] = useState("60")
+  const [addingBulk, setAddingBulk] = useState(false)
+
+  const fetchBookings = useCallback(async () => {
+    setLoadingBookings(true)
     try {
-      const response = await fetch('/api/admin/slots');
-      const data = await response.json();
-      if (data.slots) {
-        setAvailabilitySlots(data.slots);
-      }
-    } catch (error) {
-      console.error('Error fetching availability:', error);
+      const res = await fetch("/api/admin/bookings")
+      const data = await res.json()
+      if (data.bookings) setBookings(data.bookings)
+    } catch (e) {
+      console.error("Failed to fetch bookings:", e)
     }
-  };
+    setLoadingBookings(false)
+  }, [])
+
+  const fetchSlots = useCallback(async () => {
+    setLoadingSlots(true)
+    try {
+      const res = await fetch("/api/admin/slots")
+      const data = await res.json()
+      if (data.slots) setSlots(data.slots)
+    } catch (e) {
+      console.error("Failed to fetch slots:", e)
+    }
+    setLoadingSlots(false)
+  }, [])
 
   useEffect(() => {
-    fetchAppointments();
-    fetchAvailability();
-  }, []);
+    fetchBookings()
+    fetchSlots()
+  }, [fetchBookings, fetchSlots])
 
-  // Auto-clear success/error messages after 5 seconds
-  useEffect(() => {
-    if (success || error) {
-      const timer = setTimeout(() => {
-        setSuccess('');
-        setError('');
-      }, 5000);
-      return () => clearTimeout(timer);
-    }
-  }, [success, error]);
+  const formatTime = (time: string) => {
+    const [h, m] = time.split(":")
+    const hour = parseInt(h)
+    const ampm = hour >= 12 ? "PM" : "AM"
+    const hour12 = hour % 12 || 12
+    return `${hour12}:${m} ${ampm}`
+  }
 
-  // Delete appointment
-  const handleDeleteAppointment = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this appointment?')) return;
+  const formatDate = (dateStr: string) => {
+    return new Date(dateStr + "T00:00:00").toLocaleDateString("en-US", {
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    })
+  }
+
+  const handleAddSlot = async () => {
+    if (!newSlotDate || !newSlotStartTime) return
+    setAddingSlot(true)
+    const dur = parseInt(newSlotDuration)
+    const [h, m] = newSlotStartTime.split(":").map(Number)
+    const endMinutes = h * 60 + m + dur
+    const endH = Math.floor(endMinutes / 60).toString().padStart(2, "0")
+    const endM = (endMinutes % 60).toString().padStart(2, "0")
 
     try {
-      const response = await fetch(`/api/appointments?id=${id}`, {
-        method: 'DELETE',
-      });
-      const data = await response.json();
-      
-      if (data.success) {
-        setSuccess('Appointment deleted successfully');
-        fetchAppointments();
-      } else {
-        setError(data.error);
-      }
-    } catch (error) {
-      setError('Failed to delete appointment');
-    }
-  };
-
-  // Update appointment status
-  const handleUpdateStatus = async (id: string, status: string) => {
-    try {
-      const response = await fetch('/api/appointments', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, status }),
-      });
-      const data = await response.json();
-      
-      if (data.success) {
-        setSuccess('Status updated successfully');
-        fetchAppointments();
-      } else {
-        setError(data.error);
-      }
-    } catch (error) {
-      setError('Failed to update status');
-    }
-  };
-
-  // Add availability slot
-  const handleAddAvailability = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
-    setSuccess('');
-
-    // Validate fields
-    if (!newSlot.dayOfWeek || !newSlot.startTime || !newSlot.endTime) {
-      setError('Please fill in all fields');
-      setLoading(false);
-      return;
-    }
-    
-    try {
-      const response = await fetch('/api/availability', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      await fetch("/api/admin/slots", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          dayOfWeek: parseInt(newSlot.dayOfWeek),
-          startTime: newSlot.startTime,
-          endTime: newSlot.endTime,
+          slots: [{
+            date: newSlotDate,
+            start_time: `${newSlotStartTime}:00`,
+            end_time: `${endH}:${endM}:00`,
+            duration: dur,
+          }],
         }),
-      });
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      
-      const data = await response.json();
-      
-      if (data.success) {
-        setSuccess('Availability slot added successfully');
-        fetchAvailability();
-        // Reset form
-        setNewSlot({ dayOfWeek: '', startTime: '', endTime: '' });
-      } else {
-        setError(data.error || 'Failed to add availability slot');
-      }
-    } catch (error) {
-      console.error('Error adding availability:', error);
-      setError('Failed to add availability slot. Please try again.');
-    } finally {
-      setLoading(false);
+      })
+      fetchSlots()
+      setNewSlotDate("")
+      setNewSlotStartTime("09:00")
+    } catch (e) {
+      console.error("Failed to add slot:", e)
     }
-  };
+    setAddingSlot(false)
+  }
 
-  // Delete availability slot
-  const handleDeleteAvailability = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this availability slot?')) return;
+  const handleBulkAdd = async () => {
+    if (!bulkDate) return
+    setAddingBulk(true)
+    const dur = parseInt(bulkDuration)
+    const startH = parseInt(bulkStartHour)
+    const endH = parseInt(bulkEndHour)
+    const slotsToAdd = []
+
+    for (let h = startH; h < endH; h += dur / 60) {
+      const startMinutes = Math.round(h * 60)
+      const endMinutes = startMinutes + dur
+      if (endMinutes > endH * 60) break
+
+      const sH = Math.floor(startMinutes / 60).toString().padStart(2, "0")
+      const sM = (startMinutes % 60).toString().padStart(2, "0")
+      const eH = Math.floor(endMinutes / 60).toString().padStart(2, "0")
+      const eM = (endMinutes % 60).toString().padStart(2, "0")
+
+      slotsToAdd.push({
+        date: bulkDate,
+        start_time: `${sH}:${sM}:00`,
+        end_time: `${eH}:${eM}:00`,
+        duration: dur,
+      })
+    }
 
     try {
-      const response = await fetch(`/api/admin/slots?id=${id}`, {
-        method: 'DELETE',
-      });
-      const data = await response.json();
-      
-      if (data.success) {
-        setSuccess('Availability slot deleted successfully');
-        fetchAvailability();
-      } else {
-        setError(data.error);
-      }
-    } catch (error) {
-      setError('Failed to delete availability slot');
+      await fetch("/api/admin/slots", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ slots: slotsToAdd }),
+      })
+      fetchSlots()
+      setBulkDate("")
+    } catch (e) {
+      console.error("Failed to bulk add:", e)
     }
-  };
+    setAddingBulk(false)
+  }
 
-  // Delete all availability slots
-  const handleDeleteAllSlots = async () => {
-    if (!confirm('Are you sure you want to delete ALL available slots? This action cannot be undone!')) return;
-
-    setLoading(true);
+  const handleDeleteSlot = async (id: string) => {
+    if (!confirm("Delete this slot?")) return
     try {
-      const response = await fetch(`/api/admin/slots?all=true`, {
-        method: 'DELETE',
-      });
-      const data = await response.json();
-      
-      if (data.success) {
-        setSuccess('All availability slots deleted successfully');
-        fetchAvailability();
-      } else {
-        setError(data.error);
-      }
-    } catch (error) {
-      setError('Failed to delete all slots');
-    } finally {
-      setLoading(false);
+      await fetch(`/api/admin/slots?id=${id}`, { method: "DELETE" })
+      fetchSlots()
+    } catch (e) {
+      console.error("Failed to delete slot:", e)
     }
-  };
+  }
 
-  const getStatusBadge = (status: string) => {
+  const handleStatusChange = async (bookingId: string, newStatus: string) => {
+    if (!confirm(`Change status to "${newStatus}"?`)) return
+    try {
+      await fetch("/api/admin/bookings", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ booking_id: bookingId, status: newStatus }),
+      })
+      fetchBookings()
+      fetchSlots()
+    } catch (e) {
+      console.error("Failed to update status:", e)
+    }
+  }
+
+  const handleReschedule = async (bookingId: string) => {
+    if (!rescheduleSlotId) return
+    try {
+      await fetch("/api/admin/bookings", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ booking_id: bookingId, new_slot_id: rescheduleSlotId }),
+      })
+      fetchBookings()
+      fetchSlots()
+      setRescheduleBookingId(null)
+      setRescheduleSlotId("")
+    } catch (e) {
+      console.error("Failed to reschedule:", e)
+    }
+  }
+
+  const statusColor = (status: string) => {
     switch (status) {
-      case 'confirmed':
-        return <Badge className="bg-green-500"><CheckCircle className="w-3 h-3 mr-1" />Confirmed</Badge>;
-      case 'pending':
-        return <Badge className="bg-yellow-500"><AlertCircle className="w-3 h-3 mr-1" />Pending</Badge>;
-      case 'cancelled':
-        return <Badge variant="destructive"><XCircle className="w-3 h-3 mr-1" />Cancelled</Badge>;
-      case 'completed':
-        return <Badge variant="secondary">Completed</Badge>;
-      default:
-        return <Badge variant="outline">{status}</Badge>;
+      case "confirmed": return "bg-emerald-500/20 text-emerald-400 border-emerald-500/30"
+      case "cancelled": return "bg-red-500/20 text-red-400 border-red-500/30"
+      case "completed": return "bg-blue-500/20 text-blue-400 border-blue-500/30"
+      case "rescheduled": return "bg-amber-500/20 text-amber-400 border-amber-500/30"
+      default: return ""
     }
-  };
+  }
 
-  const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const confirmedCount = bookings.filter(b => b.status === "confirmed").length
+  const totalSlots = slots.length
+  const availableSlots = slots.filter(s => !s.is_booked).length
 
   return (
-    <div className="container mx-auto py-8 space-y-8">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold">Appointment Dashboard</h1>
-          <p className="text-muted-foreground">Manage your appointments and availability</p>
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4">
+          <div className="flex items-center gap-2">
+            <TrendingUp className="h-5 w-5 text-primary" />
+            <span className="text-lg font-bold text-foreground">Mentix Admin</span>
+          </div>
+          <Button variant="ghost" size="sm" onClick={() => {
+            document.cookie = "admin_session=; path=/; max-age=0"
+            window.location.reload()
+          }}>
+            <LogOut className="mr-2 h-4 w-4" /> Sign Out
+          </Button>
         </div>
-      </div>
+      </header>
 
-      {error && (
-        <Alert variant="destructive">
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      )}
+      <div className="mx-auto max-w-7xl px-4 py-8">
+        {/* Stats cards */}
+        <div className="mb-8 grid gap-4 sm:grid-cols-3">
+          <Card className="border-border bg-card">
+            <CardContent className="flex items-center gap-4 p-6">
+              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
+                <Users className="h-6 w-6 text-primary" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-foreground">{confirmedCount}</p>
+                <p className="text-sm text-muted-foreground">Upcoming Sessions</p>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="border-border bg-card">
+            <CardContent className="flex items-center gap-4 p-6">
+              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-emerald-500/10">
+                <CalendarDays className="h-6 w-6 text-emerald-400" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-foreground">{availableSlots}</p>
+                <p className="text-sm text-muted-foreground">Available Slots</p>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="border-border bg-card">
+            <CardContent className="flex items-center gap-4 p-6">
+              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-500/10">
+                <CalendarIcon className="h-6 w-6 text-blue-400" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-foreground">{totalSlots}</p>
+                <p className="text-sm text-muted-foreground">Total Slots</p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
 
-      {success && (
-        <Alert className="border-green-500 text-green-600">
-          <AlertDescription>{success}</AlertDescription>
-        </Alert>
-      )}
+        <Tabs defaultValue="bookings" className="space-y-6">
+          <TabsList className="bg-muted">
+            <TabsTrigger value="bookings">Bookings</TabsTrigger>
+            <TabsTrigger value="slots">Availability</TabsTrigger>
+          </TabsList>
 
-      <Tabs defaultValue="appointments" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="appointments">Appointments</TabsTrigger>
-          <TabsTrigger value="availability">Availability</TabsTrigger>
-        </TabsList>
+          {/* Bookings Tab */}
+          <TabsContent value="bookings" className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-semibold text-foreground">All Bookings</h2>
+              <Button variant="outline" size="sm" onClick={fetchBookings}>
+                <RefreshCw className="mr-2 h-4 w-4" /> Refresh
+              </Button>
+            </div>
 
-        {/* Appointments Tab */}
-        <TabsContent value="appointments" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>All Appointments</CardTitle>
-              <CardDescription>View and manage all scheduled appointments</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="overflow-x-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Client</TableHead>
-                      <TableHead>Contact</TableHead>
-                      <TableHead>Date & Time</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Meeting Link</TableHead>
-                      <TableHead>Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {appointments.length === 0 ? (
-                      <TableRow>
-                        <TableCell colSpan={6} className="text-center text-muted-foreground">
-                          No appointments scheduled
-                        </TableCell>
+            {loadingBookings ? (
+              <div className="flex items-center justify-center py-12">
+                <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+              </div>
+            ) : bookings.length === 0 ? (
+              <Card className="border-border bg-card">
+                <CardContent className="py-12 text-center">
+                  <Users className="mx-auto mb-3 h-10 w-10 text-muted-foreground opacity-50" />
+                  <p className="text-muted-foreground">No bookings yet.</p>
+                </CardContent>
+              </Card>
+            ) : (
+              <Card className="border-border bg-card overflow-hidden">
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow className="border-border">
+                        <TableHead>Client</TableHead>
+                        <TableHead>Date & Time</TableHead>
+                        <TableHead>Duration</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Zoom</TableHead>
+                        <TableHead className="text-right">Actions</TableHead>
                       </TableRow>
-                    ) : (
-                      appointments.map((apt) => (
-                        <TableRow key={apt.id}>
+                    </TableHeader>
+                    <TableBody>
+                      {bookings.map((booking) => (
+                        <TableRow key={booking.id} className="border-border">
                           <TableCell>
-                            <div className="font-medium">{apt.clientName}</div>
-                            {apt.notes && (
-                              <div className="text-sm text-muted-foreground truncate max-w-xs">
-                                {apt.notes}
-                              </div>
-                            )}
-                          </TableCell>
-                          <TableCell>
-                            <div className="flex flex-col gap-1 text-sm">
-                              <span className="flex items-center gap-1">
-                                <Mail className="w-3 h-3" />
-                                {apt.clientEmail}
-                              </span>
-                              {apt.clientPhone && (
-                                <span className="flex items-center gap-1">
-                                  <Phone className="w-3 h-3" />
-                                  {apt.clientPhone}
-                                </span>
+                            <div>
+                              <p className="font-medium text-foreground">{booking.client_name}</p>
+                              <p className="text-sm text-muted-foreground">{booking.client_email}</p>
+                              {booking.client_phone && (
+                                <p className="text-xs text-muted-foreground">{booking.client_phone}</p>
                               )}
                             </div>
                           </TableCell>
                           <TableCell>
-                            <div className="flex flex-col gap-1">
-                              <span className="flex items-center gap-1">
-                                <Calendar className="w-3 h-3" />
-                                {new Date(apt.date).toLocaleDateString()}
-                              </span>
-                              <span className="flex items-center gap-1">
-                                <Clock className="w-3 h-3" />
-                                {apt.startTime} - {apt.endTime}
-                              </span>
+                            <div>
+                              <p className="font-medium text-foreground">
+                                {booking.availability_slots ? formatDate(booking.availability_slots.date) : "N/A"}
+                              </p>
+                              <p className="text-sm text-muted-foreground">
+                                {booking.availability_slots ? formatTime(booking.availability_slots.start_time) : "N/A"}
+                              </p>
                             </div>
                           </TableCell>
                           <TableCell>
-                            <Select
-                              value={apt.status}
-                              onValueChange={(value) => handleUpdateStatus(apt.id, value)}
-                            >
-                              <SelectTrigger className="w-32">
-                                <SelectValue />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="pending">Pending</SelectItem>
-                                <SelectItem value="confirmed">Confirmed</SelectItem>
-                                <SelectItem value="cancelled">Cancelled</SelectItem>
-                                <SelectItem value="completed">Completed</SelectItem>
-                              </SelectContent>
-                            </Select>
+                            <span className="text-foreground">{booking.duration} min</span>
                           </TableCell>
                           <TableCell>
-                            {apt.zoomJoinUrl ? (
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                asChild
+                            <Badge variant="outline" className={statusColor(booking.status)}>
+                              {booking.status}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            {booking.zoom_start_url ? (
+                              <a
+                                href={booking.zoom_start_url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1 text-sm text-primary hover:underline"
                               >
-                                <a href={apt.zoomJoinUrl} target="_blank" rel="noopener noreferrer">
-                                  <Video className="w-4 h-4 mr-1" />
-                                  Join
-                                </a>
-                              </Button>
+                                <Video className="h-3.5 w-3.5" /> Start
+                              </a>
                             ) : (
-                              <span className="text-sm text-muted-foreground">N/A</span>
+                              <span className="text-xs text-muted-foreground">N/A</span>
                             )}
                           </TableCell>
-                          <TableCell>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleDeleteAppointment(apt.id)}
-                            >
-                              <Trash2 className="w-4 h-4 text-red-500" />
-                            </Button>
+                          <TableCell className="text-right">
+                            <div className="flex items-center justify-end gap-1">
+                              {booking.status === "confirmed" && (
+                                <>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="text-emerald-400 hover:text-emerald-300"
+                                    onClick={() => handleStatusChange(booking.id, "completed")}
+                                  >
+                                    <CheckCircle2 className="h-4 w-4" />
+                                  </Button>
+                                  <Dialog open={rescheduleBookingId === booking.id} onOpenChange={(open) => {
+                                    if (!open) { setRescheduleBookingId(null); setRescheduleSlotId(""); }
+                                  }}>
+                                    <DialogTrigger asChild>
+                                      <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        className="text-amber-400 hover:text-amber-300"
+                                        onClick={() => setRescheduleBookingId(booking.id)}
+                                      >
+                                        <RefreshCw className="h-4 w-4" />
+                                      </Button>
+                                    </DialogTrigger>
+                                    <DialogContent className="bg-card border-border">
+                                      <DialogHeader>
+                                        <DialogTitle>Reschedule Booking</DialogTitle>
+                                        <DialogDescription>
+                                          Select a new available slot for {booking.client_name}
+                                        </DialogDescription>
+                                      </DialogHeader>
+                                      <div className="space-y-4 py-4">
+                                        <Select value={rescheduleSlotId} onValueChange={setRescheduleSlotId}>
+                                          <SelectTrigger>
+                                            <SelectValue placeholder="Select a new slot" />
+                                          </SelectTrigger>
+                                          <SelectContent>
+                                            {slots
+                                              .filter(s => !s.is_booked && s.duration === booking.duration)
+                                              .map(s => (
+                                                <SelectItem key={s.id} value={s.id}>
+                                                  {formatDate(s.date)} at {formatTime(s.start_time)} ({s.duration} min)
+                                                </SelectItem>
+                                              ))}
+                                          </SelectContent>
+                                        </Select>
+                                        <Button
+                                          className="w-full"
+                                          disabled={!rescheduleSlotId}
+                                          onClick={() => handleReschedule(booking.id)}
+                                        >
+                                          Confirm Reschedule
+                                        </Button>
+                                      </div>
+                                    </DialogContent>
+                                  </Dialog>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="text-red-400 hover:text-red-300"
+                                    onClick={() => handleStatusChange(booking.id, "cancelled")}
+                                  >
+                                    <XCircle className="h-4 w-4" />
+                                  </Button>
+                                </>
+                              )}
+                            </div>
                           </TableCell>
                         </TableRow>
-                      ))
-                    )}
-                  </TableBody>
-                </Table>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </Card>
+            )}
+          </TabsContent>
 
-        {/* Availability Tab */}
-        <TabsContent value="availability" className="space-y-4">
-          <div className="grid gap-6">
-            {/* Add Availability Form */}
-            <Card>
+          {/* Availability Tab */}
+          <TabsContent value="slots" className="space-y-6">
+            {/* Add single slot */}
+            <Card className="border-border bg-card">
               <CardHeader>
-                <CardTitle>Add Availability Slot</CardTitle>
-                <CardDescription>Set your available days and times</CardDescription>
+                <CardTitle className="flex items-center gap-2">
+                  <Plus className="h-5 w-5 text-primary" /> Add Single Slot
+                </CardTitle>
+                <CardDescription>Add an individual availability slot</CardDescription>
               </CardHeader>
               <CardContent>
-                <form onSubmit={handleAddAvailability} className="space-y-4">
+                <div className="flex flex-wrap items-end gap-4">
                   <div className="space-y-2">
-                    <Label>Day of Week</Label>
-                    <Select
-                      value={newSlot.dayOfWeek} 
-                      onValueChange={(value) => setNewSlot({ ...newSlot, dayOfWeek: value })}
-                      required
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a day" />
+                    <Label>Date</Label>
+                    <Input
+                      type="date"
+                      value={newSlotDate}
+                      onChange={(e) => setNewSlotDate(e.target.value)}
+                      min={new Date().toISOString().split("T")[0]}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Start Time</Label>
+                    <Input
+                      type="time"
+                      value={newSlotStartTime}
+                      onChange={(e) => setNewSlotStartTime(e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Duration</Label>
+                    <Select value={newSlotDuration} onValueChange={setNewSlotDuration}>
+                      <SelectTrigger className="w-[130px]">
+                        <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        {dayNames.map((day, idx) => (
-                          <SelectItem key={idx} value={idx.toString()}>
-                            {day}
+                        <SelectItem value="30">30 min</SelectItem>
+                        <SelectItem value="60">60 min</SelectItem>
+                        <SelectItem value="90">90 min</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <Button onClick={handleAddSlot} disabled={addingSlot || !newSlotDate}>
+                    {addingSlot ? "Adding..." : "Add Slot"}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Bulk add slots */}
+            <Card className="border-border bg-card">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <CalendarDays className="h-5 w-5 text-primary" /> Bulk Add Slots
+                </CardTitle>
+                <CardDescription>Generate multiple slots for an entire day</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-wrap items-end gap-4">
+                  <div className="space-y-2">
+                    <Label>Date</Label>
+                    <Input
+                      type="date"
+                      value={bulkDate}
+                      onChange={(e) => setBulkDate(e.target.value)}
+                      min={new Date().toISOString().split("T")[0]}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Start Hour</Label>
+                    <Select value={bulkStartHour} onValueChange={setBulkStartHour}>
+                      <SelectTrigger className="w-[100px]">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {Array.from({ length: 24 }, (_, i) => (
+                          <SelectItem key={i} value={i.toString()}>
+                            {i.toString().padStart(2, "0")}:00
                           </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
                   </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="startTime">Start Time</Label>
-                      <Input
-                        type="time"
-                        value={newSlot.startTime}
-                        onChange={(e) => setNewSlot({ ...newSlot, startTime: e.target.value })}
-                        required
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="endTime">End Time</Label>
-                      <Input
-                        type="time"
-                        value={newSlot.endTime}
-                        onChange={(e) => setNewSlot({ ...newSlot, endTime: e.target.value })}
-                        required
-                      />
-                    </div>
+                  <div className="space-y-2">
+                    <Label>End Hour</Label>
+                    <Select value={bulkEndHour} onValueChange={setBulkEndHour}>
+                      <SelectTrigger className="w-[100px]">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {Array.from({ length: 24 }, (_, i) => (
+                          <SelectItem key={i} value={i.toString()}>
+                            {i.toString().padStart(2, "0")}:00
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
-
-                  <Button type="submit" className="w-full" disabled={loading}>
-                    <Plus className="w-4 h-4 mr-2" />
-                    {loading ? 'Adding...' : 'Add Availability Slot'}
+                  <div className="space-y-2">
+                    <Label>Duration</Label>
+                    <Select value={bulkDuration} onValueChange={setBulkDuration}>
+                      <SelectTrigger className="w-[100px]">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="30">30 min</SelectItem>
+                        <SelectItem value="60">60 min</SelectItem>
+                        <SelectItem value="90">90 min</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <Button onClick={handleBulkAdd} disabled={addingBulk || !bulkDate}>
+                    {addingBulk ? "Adding..." : "Generate Slots"}
                   </Button>
-                </form>
+                </div>
               </CardContent>
             </Card>
 
-            {/* Current Availability */}
-            <Card>
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <CardTitle>Current Availability</CardTitle>
-                    <CardDescription>Your active availability slots</CardDescription>
-                  </div>
-                  {availabilitySlots.length > 0 && (
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={handleDeleteAllSlots}
-                      disabled={loading}
-                    >
-                      <Trash2 className="w-4 h-4 mr-2" />
-                      Delete All Slots
-                    </Button>
-                  )}
+            {/* Slots list */}
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-semibold text-foreground">All Availability Slots</h2>
+              <Button variant="outline" size="sm" onClick={fetchSlots}>
+                <RefreshCw className="mr-2 h-4 w-4" /> Refresh
+              </Button>
+            </div>
+
+            {loadingSlots ? (
+              <div className="flex items-center justify-center py-12">
+                <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+              </div>
+            ) : slots.length === 0 ? (
+              <Card className="border-border bg-card">
+                <CardContent className="py-12 text-center">
+                  <Clock className="mx-auto mb-3 h-10 w-10 text-muted-foreground opacity-50" />
+                  <p className="text-muted-foreground">No availability slots configured.</p>
+                  <p className="text-sm text-muted-foreground">Add slots above to get started.</p>
+                </CardContent>
+              </Card>
+            ) : (
+              <Card className="border-border bg-card overflow-hidden">
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow className="border-border">
+                        <TableHead>Date</TableHead>
+                        <TableHead>Time</TableHead>
+                        <TableHead>Duration</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead className="text-right">Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {slots.map((slot) => (
+                        <TableRow key={slot.id} className="border-border">
+                          <TableCell className="font-medium text-foreground">
+                            {formatDate(slot.date)}
+                          </TableCell>
+                          <TableCell>
+                            <span className="text-foreground">
+                              {formatTime(slot.start_time)} - {formatTime(slot.end_time)}
+                            </span>
+                          </TableCell>
+                          <TableCell>
+                            <span className="text-foreground">{slot.duration} min</span>
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant="outline" className={
+                              slot.is_booked
+                                ? "bg-amber-500/20 text-amber-400 border-amber-500/30"
+                                : "bg-emerald-500/20 text-emerald-400 border-emerald-500/30"
+                            }>
+                              {slot.is_booked ? "Booked" : "Available"}
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="text-right">
+                            {!slot.is_booked && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="text-red-400 hover:text-red-300"
+                                onClick={() => handleDeleteSlot(slot.id)}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            )}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
                 </div>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  {availabilitySlots.length === 0 ? (
-                    <p className="text-sm text-muted-foreground">No availability slots set</p>
-                  ) : (
-                    availabilitySlots.map((slot) => (
-                      <div
-                        key={slot.id}
-                        className="flex items-center justify-between p-3 border rounded-lg"
-                      >
-                        <div>
-                          <div className="font-medium">{dayNames[slot.dayOfWeek]}</div>
-                          <div className="text-sm text-muted-foreground">
-                            {slot.startTime} - {slot.endTime}
-                          </div>
-                        </div>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleDeleteAvailability(slot.id)}
-                        >
-                          <Trash2 className="w-4 h-4 text-red-500" />
-                        </Button>
-                      </div>
-                    ))
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </TabsContent>
-      </Tabs>
+              </Card>
+            )}
+          </TabsContent>
+        </Tabs>
+      </div>
     </div>
-  );
+  )
 }
