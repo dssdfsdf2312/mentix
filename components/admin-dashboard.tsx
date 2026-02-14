@@ -209,6 +209,23 @@ export function AdminDashboard() {
     }
   }
 
+  const handleDeleteAllSlots = async () => {
+    const availableCount = slots.filter(s => !s.is_booked).length
+    if (availableCount === 0) {
+      alert("No available slots to delete.")
+      return
+    }
+    if (!confirm(`Delete all ${availableCount} available slots? Booked slots will not be affected.`)) return
+    try {
+      await fetch("/api/admin/slots?all=true", { method: "DELETE" })
+      fetchSlots()
+      alert("All available slots deleted successfully.")
+    } catch (e) {
+      console.error("Failed to delete all slots:", e)
+      alert("Failed to delete slots. Please try again.")
+    }
+  }
+
   const handleStatusChange = async (bookingId: string, newStatus: string) => {
     if (!confirm(`Change status to "${newStatus}"?`)) return
     try {
@@ -594,9 +611,19 @@ export function AdminDashboard() {
             {/* Slots list */}
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-semibold text-foreground">All Availability Slots</h2>
-              <Button variant="outline" size="sm" onClick={fetchSlots}>
-                <RefreshCw className="mr-2 h-4 w-4" /> Refresh
-              </Button>
+              <div className="flex gap-2">
+                <Button variant="outline" size="sm" onClick={fetchSlots}>
+                  <RefreshCw className="mr-2 h-4 w-4" /> Refresh
+                </Button>
+                <Button 
+                  variant="destructive" 
+                  size="sm" 
+                  onClick={handleDeleteAllSlots}
+                  disabled={slots.filter(s => !s.is_booked).length === 0}
+                >
+                  <Trash2 className="mr-2 h-4 w-4" /> Delete All Available
+                </Button>
+              </div>
             </div>
 
             {loadingSlots ? (
