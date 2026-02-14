@@ -1,9 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Initialize Resend only if API key is available
+let resend: Resend | null = null;
+if (process.env.RESEND_API_KEY) {
+  resend = new Resend(process.env.RESEND_API_KEY);
+}
 
 export async function POST(request: NextRequest) {
+  // Check if email service is configured
+  if (!resend) {
+    console.warn("Email service not configured - RESEND_API_KEY missing");
+    return NextResponse.json({
+      success: true,
+      message: "Booking confirmed (email service not configured)",
+    });
+  }
   try {
     const { client_name, client_email, date, start_time, duration, zoom_join_url, booking_id } =
       await request.json();
