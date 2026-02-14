@@ -1,0 +1,96 @@
+import { createClient } from "@/lib/supabase/server";
+import { NextRequest, NextResponse } from "next/server";
+
+export async function GET() {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("bookings")
+    .select("*, availability_slots(*)")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+
+  return NextResponse.json({ bookings: data });
+}
+
+export async function PATCH(request: NextRequest) {
+  const supabase = await createClient();
+  const body = await request.json();
+  const { booking_id, status, new_slot_id } = body;
+
+  if (!booking_id) {
+    return NextResponse.json({ error: "Booking ID required" }, { status: 400 });
+  }
+
+  // Get current booking
+  const { data: currentBooking, error: fetchError } = await supabase
+    .from("bookings")
+    .select("*")
+    .eq("id", booking_id)
+    .single();
+
+  if (fetchError || !currentBooking) {
+    return NextResponse.json({ error: "Booking not found" }, { status: 404 });
+  }
+
+  // If rescheduling
+  if (new_slot_id && new_slot_id !== currentBooking.slot_id) {
+    // Free old slot
+    await supabase
+      .from("availability_slots")
+      .update({ is_booked: false, updated_at: new Date().toISOString() })
+      .eq("id", currentBooking.slot_id);
+
+    // Book new slot
+    await supabase
+      .from("availability_slots")
+      .update({ is_booked: true, updated_at: new Date().toISOString() })
+      .eq("id", new_slot_id);
+
+    const { data, error } = await supabase
+      .from("bookings")
+      .update({
+        slot_id: new_slot_id,
+        status: "rescheduled",
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", booking_id)
+      .select("*, availability_slots(*)")
+      .single();
+
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    return NextResponse.json({ booking: data });
+  }
+
+  // If just updating status (cancel, complete, etc.)
+  if (status) {
+    if (status === "cancelled") {
+      // Free the slot
+      await supabase
+        .from("availability_slots")
+        .update({ is_booked: false, updated_at: new Date().toISOString() })
+        .eq("id", currentBooking.slot_id);
+    }
+
+    const { data, error } = await supabase
+      .from("bookings")
+      .update({ status, updated_at: new Date().toISOString() })
+      .eq("id", booking_id)
+      .select("*, availability_slots(*)")
+      .single();
+
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    return NextResponse.json({ booking: data });
+  }
+
+  return NextResponse.json({ error: "No action specified" }, { status: 400 });
+}
