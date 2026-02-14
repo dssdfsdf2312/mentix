@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+﻿import { createClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
@@ -88,7 +88,7 @@ export async function POST(request: NextRequest) {
 
   // Send confirmation email
   try {
-    await fetch(`${request.nextUrl.origin}/api/email/send-confirmation`, {
+    const emailRes = await fetch(`${request.nextUrl.origin}/api/email/send-confirmation`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -101,8 +101,16 @@ export async function POST(request: NextRequest) {
         zoom_join_url: zoomData?.join_url || null,
       }),
     });
+    
+    const emailResult = await emailRes.json();
+    
+    if (!emailRes.ok) {
+      console.error("❌ Email sending failed:", emailResult);
+    } else {
+      console.log("✅ Email confirmation sent successfully");
+    }
   } catch (e) {
-    console.error("Email sending failed:", e);
+    console.error("❌ Email sending error:", e);
   }
 
   // Notion calendar automation
