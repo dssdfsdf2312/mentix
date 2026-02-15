@@ -1,10 +1,11 @@
-import React from "react"
+﻿import React from "react"
 import type { Metadata } from 'next'
 import { Inter, Alexandria } from 'next/font/google'
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
+import { ThemeProvider } from '@/components/theme-provider';
 
 import '../globals.css'
 
@@ -40,13 +41,19 @@ export default async function RootLayout({
   const fontClass = locale === 'ar' ? alexandria.className : inter.className;
 
   return (
-    <html lang={locale} dir={direction}>
-      <body className={`${fontClass} antialiased`}>
-        <NextIntlClientProvider messages={messages}>
-          {children}
-        </NextIntlClientProvider>
+    <html lang={locale} dir={direction} suppressHydrationWarning>
+      <body className={${fontClass} antialiased}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem={false}
+          disableTransitionOnChange
+        >
+          <NextIntlClientProvider messages={messages}>
+            {children}
+          </NextIntlClientProvider>
+        </ThemeProvider>
       </body>
     </html>
   )
 }
-
