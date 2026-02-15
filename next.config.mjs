@@ -1,0 +1,18 @@
+﻿import createNextIntlPlugin from 'next-intl/plugin';
+
+const withNextIntl = createNextIntlPlugin('./i18n.ts');
+
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  images: {
+    formats: ["image/avif", "image/webp"],
+    deviceSizes: [640, 828, 1080, 1200],
+    imageSizes: [256, 384],
+  },
+}
+
+export default withNextIntl(nextConfig);
+

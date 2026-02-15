@@ -1,0 +1,179 @@
+{
+  "navbar": {
+    "brand": "Mentix Trading",
+    "joinDiscord": "Join Discord",
+    "booking": "Book Session",
+    "crypto": "Crypto Insights"
+  },
+  "hero": {
+    "badge": "Limited Spots Available",
+    "title": "Master",
+    "titleHighlight": "Trading Like A Pro",
+    "description": "Crush your trading roadblocks with a personalized 1-on-1 session. Get expert insights, custom strategies, and clarity to fast-track your consistency.",
+    "enrollButton": "Enroll a Free Meeting NOW",
+    "learnMore": "What You'll Master",
+    "watchIntro": "Watch Introduction",
+    "tagline": "Unlock Your Edge & Transform Your Trading Strategy With Expert Guidance.",
+    "socialText": "To know me more check my accounts"
+  },
+  "certificate": {
+    "badge": "Proven Results",
+    "title": "Prop Firm",
+    "titleHighlight": "Achievements",
+    "description": "Real funded accounts, real payouts."
+  },
+  "curriculum": {
+    "title": "What You'll",
+    "titleHighlight": "Master",
+    "description": "Master momentum trading with clarity. Mentix Trading teaches a structured, repeatable process using POI (OB & FVG, supply & demand), market structure, and liquidity to build precision, confidence, and consistency in every trade.",
+    "modules": [
+      { "title": "Market Mechanics", "description": "Understand how markets truly move through order flow and volume analysis." },
+      { "title": "Consistency Profitable", "description": "Learn how to be a consistent profitable trader — long term profitable." },
+      { "title": "PropFirm & Funded Acc", "description": "Master how to pass a propfirm challenge with a professional strategy & risk management." },
+      { "title": "POI Identification", "description": "Identify high-probability Points of Interest using OB, FVG, and supply & demand zones." },
+      { "title": "Risk Management", "description": "Develop a professional risk framework to protect and grow your capital." },
+      { "title": "Trade Execution", "description": "Build a repeatable execution plan with clear rules and journaling practices." }
+    ]
+  },
+  "whatsIncluded": {
+    "title": "What's",
+    "titleHighlight": "Included",
+    "description": "Everything you need to become a consistently profitable trader.",
+    "items": [
+      { "title": "60+ Video Lessons", "description": "In-depth recorded lessons covering every aspect of POI (OB & FVG, supply & demand), market structure, and liquidity trading." },
+      { "title": "Private Community", "description": "Join an exclusive Discord & Telegram community of serious traders for daily discussion." },
+      { "title": "Trading Playbook", "description": "A complete playbook with setups, checklists, and journaling templates." },
+      { "title": "1-on-1 Live Sessions", "description": "Weekly 1-on-1 live sessions where you can ask questions and get real-time feedback." }
+    ]
+  },
+  "pricing": {
+    "title": "Choose Your Plan",
+    "description": "Select the perfect plan for your trading journey",
+    "monthly": "Monthly",
+    "annually": "Annually",
+    "save": "Save 20%",
+    "perMonth": "per month",
+    "selectPlan": "Select Plan",
+    "mostPopular": "Most Popular"
+  },
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "subtitle": "Everything you need to know about Mentix Trading",
+    "items": [
+      {
+        "question": "How can Mentix Trading help me achieve consistent profits?",
+        "answer": "With expert strategies, real-time coaching, and a supportive community, we simplify momentum trading for sustainable results."
+      },
+      {
+        "question": "What makes Mentix Trading different from other communities?",
+        "answer": "We offer structured trading models, live sessions, and direct access to experts who've helped thousands of traders succeed."
+      },
+      {
+        "question": "Is Mentix Trading suitable for beginners?",
+        "answer": "Yes! We simplify complex strategies into clear steps, guiding you from beginner to consistent trader."
+      },
+      {
+        "question": "How does Mentix Trading support funded traders?",
+        "answer": "We offer continuous feedback and coaching to help you secure funding, stay disciplined, and scale your trading."
+      },
+      {
+        "question": "How does the community support my trading journey?",
+        "answer": "Our active community shares insights, strategies, and real-time feedback to keep you motivated and on track."
+      }
+    ]
+  },
+  "footer": {
+    "rights": "All rights reserved.",
+    "description": "Master trading with expert guidance and proven strategies."
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "tryAgain": "Try Again"
+  },
+  "enrollment": {
+    "pageTitle": "Start Your",
+    "pageTitleHighlight": "Journey",
+    "pageSubtitle": "Answer a few quick questions to get started",
+    "questionCounter": "Question {current} of {total}",
+    "progressComplete": "{percent}% complete",
+    "question1": "What is your full name?",
+    "question1Placeholder": "Enter your full name",
+    "question1Helper": "Only letters and spaces are allowed.",
+    "question2": "What is your email address?",
+    "question2Placeholder": "example@email.com",
+    "question2Error": "Please enter a valid email address.",
+    "question3": "Your age?",
+    "question3Placeholder": "Enter your age",
+    "question4": "What are your ambitions in trading?",
+    "question4Placeholder": "Tell us about your trading goals and what you want to achieve...",
+    "question5": "Briefly describe your trading experience and expertise.",
+    "question5Placeholder": "Share your background, strategies you've used, how long you've been trading...",
+    "question6": "How much are you willing to pay to reach a professional level?",
+    "budget500": "$500",
+    "budgetAbove1000": "Above $1000",
+    "budgetAbove2000": "Above $2000",
+    "question7": "Your WhatsApp number?",
+    "question7Placeholder": "e.g. 01012345678",
+    "question7Error": "Number must be at least 10 digits.",
+    "back": "Back",
+    "next": "Next",
+    "submit": "Submit",
+    "thankYou": "Thank You, {name}!",
+    "ineligibleMessage": "Based on your current investment preference, you are currently ineligible to book a 1-on-1 coaching meeting. However, you can enroll in the",
+    "advancedCourse": "ADVANCED SMC Course",
+    "ineligibleMessageEnd": "right now!",
+    "starter": "STARTER",
+    "courseTitle": "ADVANCED SMC Course",
+    "oneTimePayment": "One-time payment, lifetime access",
+    "feature1": "Full SMC Course",
+    "feature2": "20+ Video Lessons",
+    "feature3": "Private Discord Community (limited access)",
+    "feature4": "One zoom meeting with Group of 10 people",
+    "payWithVisa": "Pay with Visa",
+    "payWithBinance": "Pay with Binance",
+    "processing": "Processing...",
+    "eligibleTitle": "You're Eligible, {name}!",
+    "eligibleSubtitle": "Book your onboarding meeting below to get started with 1-on-1 Coaching."
+  },
+  "coaching": {
+    "badge": "Personalized Mentorship",
+    "title": "1-on-1",
+    "titleHighlight": "Coaching Mentorship",
+    "description": "Get direct, personalized guidance from an expert trader. Weekly live Zoom sessions, custom strategies tailored to your goals, and ongoing support to fast-track your path to consistency.",
+    "watchIntro": "Watch Introduction",
+    "whyTitle": "Why Choose",
+    "whyTitleHighlight": "1-on-1 Coaching",
+    "whyDescription": "Unlike group courses, our 1-on-1 coaching is tailored entirely to you. Your trading style, your weaknesses, your goals.",
+    "whyItems": [
+      { "title": "Personalized Strategy", "description": "Get a trading strategy built specifically around your strengths, schedule, and risk tolerance." },
+      { "title": "Weekly Live Sessions", "description": "6 months of weekly 1-on-1 Zoom sessions with direct feedback on your trades and chart analysis." },
+      { "title": "Funded Account Strategy", "description": "A proven step-by-step strategy to pass prop firm challenges and manage funded accounts." },
+      { "title": "Lifetime Access", "description": "Full access to 50+ video lessons, trading playbook, templates, and private Discord & Telegram communities forever." }
+    ],
+    "pricingTitle": "Invest in Your",
+    "pricingTitleHighlight": "Trading Future"
+  },
+  "egyptPayment": {
+    "title": "For Egyptian People You Can Pay With",
+    "titleHighlight": "Instapay",
+    "howToPay": "How to Pay",
+    "step1": "Open your",
+    "step1Bold": "INSTAPAY",
+    "step1End": "app to Send the Payment",
+    "step2": "For",
+    "step2StarterPlan": "STARTER PLAN",
+    "step2Pay": "Pay",
+    "step2Amount": "9,600 EGP",
+    "step2And": "and For",
+    "step2CoachingPlan": "1-on-1 Coaching",
+    "step2ContactUs": "PLAN Contact Us",
+    "step3": "Send a payment confirmation screenshot to the team",
+    "step3Here": "HERE",
+    "instapay": "Instapay",
+    "vodafoneCash": "Vodafone Cash",
+    "copy": "Copy",
+    "copied": "Copied"
+  }
+}
+
